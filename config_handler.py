@@ -28,6 +28,10 @@ class ConfigHandler:
         self.config['client_secret'] = client_secret
         self.write_config()
 
+    def save_hotkey(self, hotkey):
+        self.config['hotkey'] = hotkey
+        self.write_config()
+
     def toggle_device(self, device_id, var):
         if var:
             if device_id not in self.config['selected_devices']:
