@@ -1,0 +1,1 @@
+from .hotkey_entry import HotkeyEntry
