@@ -16,6 +16,9 @@ class MainWindow(ctk.CTk):
         self.hotkey_entry = HotkeyEntry(self, controller.hotkey_handler)
         self.hotkey_entry.pack(pady=10)
 
+        ctk.CTkButton(self, text="Set Hotkey", command=self.controller.set_device_switch_hotkey).pack(pady=5)
+
+
         # Device list
         self.device_frame = ctk.CTkScrollableFrame(self)
         self.device_frame.pack(pady=10, fill="both")
@@ -35,6 +38,7 @@ class MainWindow(ctk.CTk):
 
         # Get available devices
         devices = self.controller.spotify.get_available_devices()
+        # TODO: Acount for devices that are added but not available
 
         for device in devices:
             device_id = device['id']
