@@ -18,3 +18,6 @@ class SpotifyApi:
 
     def transfer_playback(self, device_id):
         self.client.transfer_playback(device_id, force_play=True)
+
+    def get_current_device(self):
+        return self.client.current_playback().get('device')

@@ -12,6 +12,7 @@ class AppController:
         self.initialize_spotify()
 
         self.hotkey_handler = hotkey_handler.HotkeyHandler(self.config_handler)
+        self.set_device_switch_hotkey(initial=True)
         
     def check_credentials(self, force=False):
         if(not self.config_handler.load_config() or force):
@@ -24,8 +25,16 @@ class AppController:
         except Exception as e:
             ErrorDialog(f"Error initializing Spotify API: {e}")
 
-    def set_hotkey(self, hotkey):
-        pass
+    def set_device_switch_hotkey(self, initial=False):
+        self.hotkey_handler.register_hotkey(self.switch_device, initial)
+
+    def switch_device(self):
+        if self.spotify.get_current_device()['id'] in self.config_handler.config['selected_devices']:
+            current_index = self.config_handler.config['selected_devices'].index(self.spotify.get_current_device()['id'])
+            next_index = (current_index + 1) % len(self.config_handler.config['selected_devices'])
+            self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
+        else:
+            self.spotify.transfer_playback(self.config_handler.config['selected_devices'][0])
 
     def run(self):
         main_window = MainWindow(self)
