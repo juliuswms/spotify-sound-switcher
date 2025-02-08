@@ -15,7 +15,7 @@ class DeviceFrame(ctk.CTkScrollableFrame):
         self.device_vars = {}  # Dictionary to track checkboxes
 
         # Get available devices
-        devices = self.controller.spotify.get_available_devices()
+        devices = self.controller.get_all_devices()
 
         for device in devices:
             device_id = device['id']
@@ -31,7 +31,13 @@ class DeviceFrame(ctk.CTkScrollableFrame):
             checkbox = ctk.CTkCheckBox(frame, variable=var, text="", command=partial(self.toggle_device_selection, device_id))
             checkbox.pack(side="left")
 
-            ctk.CTkLabel(frame, text=device_name).pack(side="left", padx=5)
+            device_label = ctk.CTkLabel(frame, text=device_name)
+            device_label.pack(side="left", padx=5)
+
+            if device.get("unavailable") is not None and device["unavailable"]:
+                checkbox.configure(state=ctk.DISABLED)
+                device_label.configure(text_color="gray")
+                checkbox.configure(fg_color="gray")
     
     def toggle_device_selection(self, device_id):
         selected = self.device_vars[device_id].get()
