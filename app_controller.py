@@ -44,7 +44,13 @@ class AppController:
     
     def device_has_index(self, device_id):
         return device_id in self.config_handler.config['selected_devices']
-
+    
+    def get_all_devices(self):
+        devices = self.spotify.get_available_devices()
+        unavailable_device_ids = [device for device in self.config_handler.config['selected_devices'] if device not in [device['id'] for device in devices]]
+        unavailable_devices = [{"id": device_id, "unavailable": True, "name": device_id, "type": "Unavailable"} for device_id in unavailable_device_ids]
+        return devices + unavailable_devices
+            
 
     def run(self):
         main_window = MainWindow(self)
