@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from gui.components.hotkey_entry import HotkeyEntry 
+from gui.components import HotkeyEntry, DeviceFrame
 from functools import partial
 
 class MainWindow(ctk.CTk):
@@ -13,49 +13,14 @@ class MainWindow(ctk.CTk):
         self.controller = controller
 
         # Hotkey configuration
+        ctk.CTkLabel(self, text="Hotkey:").pack(padx=5)
         self.hotkey_entry = HotkeyEntry(self, controller.hotkey_handler)
         self.hotkey_entry.pack(pady=10)
 
         ctk.CTkButton(self, text="Set Hotkey", command=self.controller.set_device_switch_hotkey).pack(pady=5)
 
-
         # Device list
-        self.device_frame = ctk.CTkScrollableFrame(self)
+        self.device_frame = DeviceFrame(self, controller)
         self.device_frame.pack(pady=10, fill="both")
-        self.populate_devices()
         
         ctk.CTkButton(self, text="Refresh Devices", command=self.populate_devices).pack(pady=5, anchor="w")
-    
-    def log(self, event=None):
-        print("Focus out event")
-
-    def populate_devices(self):
-        # Clear existing widgets before repopulating
-        for widget in self.device_frame.winfo_children():
-            widget.destroy()
-
-        self.device_vars = {}  # Dictionary to track checkboxes
-
-        # Get available devices
-        devices = self.controller.spotify.get_available_devices()
-        # TODO: Acount for devices that are added but not available
-
-        for device in devices:
-            device_id = device['id']
-            device_name = f"{device['name']} ({device['type']})"
-
-            # Create a BooleanVar to track selection state
-            var = ctk.BooleanVar(value=device_id in self.controller.config_handler.config['selected_devices'])
-            self.device_vars[device_id] = var
-
-            frame = ctk.CTkFrame(self.device_frame)
-            frame.pack(fill="x", pady=2)
-
-            checkbox = ctk.CTkCheckBox(frame, variable=var, text="", command=partial(self.toggle_device_selection, device_id))
-            checkbox.pack(side="left")
-
-            ctk.CTkLabel(frame, text=device_name).pack(side="left", padx=5)
-
-    def toggle_device_selection(self, device_id):
-        selected = self.device_vars[device_id].get()
-        self.controller.config_handler.toggle_device(device_id, selected)
