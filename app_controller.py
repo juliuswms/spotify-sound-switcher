@@ -29,12 +29,23 @@ class AppController:
         self.hotkey_handler.register_hotkey(self.switch_device, initial)
 
     def switch_device(self):
-        if self.spotify.get_current_device()['id'] in self.config_handler.config['selected_devices']:
+        # If the current device is in the selected devices list, switch to the next device in the list
+        if self.device_is_available(self.spotify.get_current_device()['id']) and self.device_has_index(self.spotify.get_current_device()['id']):
+            # Get the index of the current device in the selected devices list
             current_index = self.config_handler.config['selected_devices'].index(self.spotify.get_current_device()['id'])
+            # Get the next index in the list, looping back to the start if necessary
             next_index = (current_index + 1) % len(self.config_handler.config['selected_devices'])
             self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
         else:
+            # If the current device is not in the selected devices list, switch to the first device in the list
             self.spotify.transfer_playback(self.config_handler.config['selected_devices'][0])
+
+    def device_is_available(self, device_id):
+        return device_id in [device['id'] for device in self.spotify.get_available_devices()]
+    
+    def device_has_index(self, device_id):
+        return device_id in self.config_handler.config['selected_devices']
+
 
     def run(self):
         main_window = MainWindow(self)
