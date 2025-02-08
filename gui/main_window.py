@@ -23,4 +23,4 @@ class MainWindow(ctk.CTk):
         self.device_frame = DeviceFrame(self, controller)
         self.device_frame.pack(pady=10, fill="both")
         
-        ctk.CTkButton(self, text="Refresh Devices", command=self.populate_devices).pack(pady=5, anchor="w")
+        ctk.CTkButton(self, text="Refresh Devices", command=self.device_frame.populate_devices).pack(pady=5, anchor="w")
