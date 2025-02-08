@@ -35,10 +35,9 @@ class AppController:
             current_index = self.config_handler.config['selected_devices'].index(self.spotify.get_current_device()['id'])
             # Get the next index in the list, looping back to the start if necessary
             next_index = (current_index + 1) % len(self.config_handler.config['selected_devices'])
-            self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
-        else:
-            # If the current device is not in the selected devices list, switch to the first device in the list
-            self.spotify.transfer_playback(self.config_handler.config['selected_devices'][0])
+            # Transfer playback to the next device if it is available
+            if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
+                self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
