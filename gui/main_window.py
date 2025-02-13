@@ -7,7 +7,8 @@ class MainWindow(ctk.CTk):
         super().__init__()
         self.title("Spotify Device Switcher")
         self.geometry("400x400")
-        #self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
+        # TODO: Add functionality to MACOS and Linux
+        self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
         self.resizable(False, False)
         self.tray_icon = None
         self.controller = controller
@@ -24,3 +25,7 @@ class MainWindow(ctk.CTk):
         self.device_frame.pack(pady=10, fill="both")
         
         ctk.CTkButton(self, text="Refresh Devices", command=self.device_frame.populate_devices).pack(pady=5, anchor="w")
+
+    def minimize_to_tray(self):
+        self.withdraw()
+        self.controller.minimize_to_tray(self)

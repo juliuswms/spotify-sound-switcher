@@ -2,6 +2,9 @@ import config_handler
 import spotify_api
 from gui import MainWindow, CredentialsDialog, ErrorDialog
 import hotkey_handler
+import pystray
+import threading
+from PIL import Image
 
 class AppController:
     def __init__(self):
@@ -50,7 +53,27 @@ class AppController:
         unavailable_device_ids = [device for device in self.config_handler.config['selected_devices'] if device not in [device['id'] for device in devices]]
         unavailable_devices = [{"id": device_id, "unavailable": True, "name": device_id, "type": "Unavailable"} for device_id in unavailable_device_ids]
         return devices + unavailable_devices
-            
+
+    
+    def minimize_to_tray(self, main_window):
+        self.main_window = main_window
+        image = Image.new("RGB", (64, 64), "white") # PLACEHOLDER
+        menu = pystray.Menu(
+            pystray.MenuItem("Open", self.restore_from_tray),
+            pystray.MenuItem("Exit", self.destroy_app)
+        )
+        self.tray_icon = pystray.Icon("Spotify Device Switcher", image, menu=menu) # TODO: Add icon
+        threading.Thread(target=self.tray_icon.run, daemon=True).start()
+
+    def restore_from_tray(self):
+        if self.tray_icon:
+            self.tray_icon.stop()
+        self.main_window.deiconify()
+
+    def destroy_app(self):
+        if self.tray_icon:
+            self.tray_icon.stop()
+        self.main_window.destroy()
 
     def run(self):
         main_window = MainWindow(self)
