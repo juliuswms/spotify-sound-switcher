@@ -73,7 +73,7 @@ class AppController:
     def destroy_app(self):
         if self.tray_icon:
             self.tray_icon.stop()
-        self.main_window.destroy()
+        self.main_window.after(0, self.main_window.destroy)
 
     def run(self):
         main_window = MainWindow(self)
