@@ -34,6 +34,10 @@ class DeviceFrame(ctk.CTkScrollableFrame):
             device_label = ctk.CTkLabel(frame, text=device_name)
             device_label.pack(side="left", padx=5)
 
+            if device.get("is_active") is not None and device["is_active"]:
+                device_label.configure(text_color="lime green")
+                checkbox.configure(fg_color="lime green")
+
             if device.get("unavailable") is not None and device["unavailable"]:
                 checkbox.configure(state=ctk.DISABLED)
                 device_label.configure(text_color="gray")
