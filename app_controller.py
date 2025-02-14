@@ -59,7 +59,7 @@ class AppController:
         self.main_window = main_window
         image = Image.new("RGB", (64, 64), "white") # PLACEHOLDER
         menu = pystray.Menu(
-            pystray.MenuItem("Open", self.restore_from_tray),
+            pystray.MenuItem("Open", self.restore_from_tray, default=True),
             pystray.MenuItem("Exit", self.destroy_app)
         )
         self.tray_icon = pystray.Icon("Spotify Device Switcher", image, menu=menu) # TODO: Add icon
