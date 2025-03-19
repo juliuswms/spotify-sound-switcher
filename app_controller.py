@@ -5,6 +5,7 @@ import hotkey_handler
 import pystray
 import threading
 from PIL import Image
+import tkinter as tk  # Required to control the root window
 
 class AppController:
     def __init__(self):
@@ -16,11 +17,17 @@ class AppController:
 
         self.hotkey_handler = hotkey_handler.HotkeyHandler(self.config_handler)
         self.set_device_switch_hotkey(initial=True)
-        
+
     def check_credentials(self, force=False):
-        if(not self.config_handler.load_config() or force):
-            dialog = CredentialsDialog(self.config_handler.save_credentials)
+        if not self.config_handler.load_config() or force:
+            # Temp root window to pass as parent to CredentialsDialog
+            temp_root = tk.Tk()
+            temp_root.withdraw()
+
+            dialog = CredentialsDialog(temp_root, self.config_handler.save_credentials)
             dialog.wait_window()
+
+            temp_root.destroy()
 
     def initialize_spotify(self):
         try:
@@ -32,6 +39,7 @@ class AppController:
         self.hotkey_handler.register_hotkey(self.switch_device, initial)
 
     def switch_device(self):
+        # TODO: Refactor please
         # If the current device is in the selected devices list, switch to the next device in the list
         if self.device_is_available(self.spotify.get_current_device()['id']) and self.device_has_index(self.spotify.get_current_device()['id']):
             # Get the index of the current device in the selected devices list
