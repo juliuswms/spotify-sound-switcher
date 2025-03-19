@@ -5,6 +5,7 @@ class DeviceFrame(ctk.CTkScrollableFrame):
     def __init__(self, parent, controller, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.controller = controller
+        self.controller.gui_populate_devices = self.populate_devices
         self.populate_devices()
 
     def populate_devices(self):

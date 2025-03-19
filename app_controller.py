@@ -18,6 +18,8 @@ class AppController:
         self.hotkey_handler = hotkey_handler.HotkeyHandler(self.config_handler)
         self.set_device_switch_hotkey(initial=True)
 
+        self.gui_populate_devices = None
+
     def check_credentials(self, force=False):
         if not self.config_handler.load_config() or force:
             # Temp root window to pass as parent to CredentialsDialog
@@ -49,6 +51,7 @@ class AppController:
             # Transfer playback to the next device if it is available
             if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
                 self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
+                threading.Thread(target=lambda: (threading.Event().wait(1), self.gui_populate_devices())).start()
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
