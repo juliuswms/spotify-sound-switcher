@@ -19,6 +19,7 @@ class AppController:
         self.set_device_switch_hotkey(initial=True)
 
         self.gui_populate_devices = None
+        self.is_tray = False
 
     def check_credentials(self, force=False):
         if not self.config_handler.load_config() or force:
@@ -51,7 +52,8 @@ class AppController:
             # Transfer playback to the next device if it is available
             if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
                 self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
-                threading.Thread(target=lambda: (threading.Event().wait(1), self.gui_populate_devices())).start()
+                if not self.is_tray:
+                    threading.Thread(target=lambda: (threading.Event().wait(1), self.gui_populate_devices())).start() # TODO: Add check for tray
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
@@ -67,6 +69,7 @@ class AppController:
 
     
     def minimize_to_tray(self, main_window):
+        self.is_tray = True
         self.main_window = main_window
         image = Image.new("RGB", (64, 64), "white") # PLACEHOLDER
         menu = pystray.Menu(
@@ -82,6 +85,7 @@ class AppController:
         self.main_window.deiconify()
 
     def destroy_app(self):
+        self.is_tray = False
         if self.tray_icon:
             self.tray_icon.stop()
         self.main_window.after(0, self.main_window.destroy)
