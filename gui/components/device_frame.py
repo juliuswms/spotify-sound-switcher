@@ -1,13 +1,18 @@
 import customtkinter as ctk
 from functools import partial
+import time
 
 class DeviceFrame(ctk.CTkScrollableFrame):
     def __init__(self, parent, controller, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.controller = controller
+        self.controller.gui_populate_devices = self.populate_devices
         self.populate_devices()
 
-    def populate_devices(self):
+    def populate_devices(self, delay_refresh=False):
+        if delay_refresh:
+            #threading.Event().wait(1)
+            time.sleep(1)
         # Clear existing widgets before repopulating
         for widget in self.winfo_children():
             widget.destroy()

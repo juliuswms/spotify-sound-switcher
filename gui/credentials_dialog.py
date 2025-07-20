@@ -1,8 +1,8 @@
 import customtkinter as ctk
 
 class CredentialsDialog(ctk.CTkToplevel):
-    def __init__(self, callback):
-        super().__init__()
+    def __init__(self, parent, callback):
+        super().__init__(parent)
         self.title("Spotify API Credentials")
         self.callback = callback
         self.geometry("400x200")

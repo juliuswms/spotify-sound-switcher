@@ -5,6 +5,7 @@ import hotkey_handler
 import pystray
 import threading
 from PIL import Image
+import tkinter as tk  # Required to control the root window
 
 class AppController:
     def __init__(self):
@@ -16,11 +17,20 @@ class AppController:
 
         self.hotkey_handler = hotkey_handler.HotkeyHandler(self.config_handler)
         self.set_device_switch_hotkey(initial=True)
-        
+
+        self.gui_populate_devices = None
+        self.is_tray = False
+
     def check_credentials(self, force=False):
-        if(not self.config_handler.load_config() or force):
-            dialog = CredentialsDialog(self.config_handler.save_credentials)
+        if not self.config_handler.load_config() or force:
+            # Temp root window to pass as parent to CredentialsDialog
+            temp_root = tk.Tk()
+            temp_root.withdraw()
+
+            dialog = CredentialsDialog(temp_root, self.config_handler.save_credentials)
             dialog.wait_window()
+
+            temp_root.destroy()
 
     def initialize_spotify(self):
         try:
@@ -32,6 +42,7 @@ class AppController:
         self.hotkey_handler.register_hotkey(self.switch_device, initial)
 
     def switch_device(self):
+        # TODO: Refactor please
         # If the current device is in the selected devices list, switch to the next device in the list
         if self.device_is_available(self.spotify.get_current_device()['id']) and self.device_has_index(self.spotify.get_current_device()['id']):
             # Get the index of the current device in the selected devices list
@@ -41,6 +52,8 @@ class AppController:
             # Transfer playback to the next device if it is available
             if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
                 self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
+                if not self.is_tray:
+                    self.gui_populate_devices(delay_refresh=True)
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
@@ -56,6 +69,7 @@ class AppController:
 
     
     def minimize_to_tray(self, main_window):
+        self.is_tray = True
         self.main_window = main_window
         image = Image.new("RGB", (64, 64), "white") # PLACEHOLDER
         menu = pystray.Menu(
@@ -69,8 +83,10 @@ class AppController:
         if self.tray_icon:
             self.tray_icon.stop()
         self.main_window.deiconify()
+        self.gui_populate_devices()
 
     def destroy_app(self):
+        self.is_tray = False
         if self.tray_icon:
             self.tray_icon.stop()
         self.main_window.after(0, self.main_window.destroy)
