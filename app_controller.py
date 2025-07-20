@@ -44,7 +44,7 @@ class AppController:
     def switch_device(self):
         # TODO: Refactor please
         # If the current device is in the selected devices list, switch to the next device in the list
-        if self.device_is_available(self.spotify.get_current_device()['id']) and self.device_has_index(self.spotify.get_current_device()['id']):
+        if self.is_current_device_available() and self.device_has_index(self.spotify.get_current_device()['id']):
             # Get the index of the current device in the selected devices list
             current_index = self.config_handler.config['selected_devices'].index(self.spotify.get_current_device()['id'])
             # Get the next index in the list, looping back to the start if necessary
@@ -54,6 +54,12 @@ class AppController:
                 self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
                 if not self.is_tray:
                     self.gui_populate_devices(delay_refresh=True)
+
+    def is_current_device_available(self):
+        current_device = self.spotify.get_current_device()
+        if current_device and 'id' in current_device:
+            return self.device_is_available(current_device['id'])
+        return False
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
@@ -66,7 +72,6 @@ class AppController:
         unavailable_device_ids = [device for device in self.config_handler.config['selected_devices'] if device not in [device['id'] for device in devices]]
         unavailable_devices = [{"id": device_id, "unavailable": True, "name": device_id, "type": "Unavailable"} for device_id in unavailable_device_ids]
         return devices + unavailable_devices
-
     
     def minimize_to_tray(self, main_window):
         self.is_tray = True
@@ -85,6 +90,9 @@ class AppController:
         self.main_window.deiconify()
         self.gui_populate_devices()
 
+    def toggle_start_behavior(self):
+        self.config_handler.toggle_start_behavior()
+
     def destroy_app(self):
         self.is_tray = False
         if self.tray_icon:
@@ -93,4 +101,6 @@ class AppController:
 
     def run(self):
         main_window = MainWindow(self)
+        if self.config_handler.config.get('start_in_tray', False):
+            main_window.minimize_to_tray()
         main_window.mainloop()

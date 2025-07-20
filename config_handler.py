@@ -19,7 +19,8 @@ class ConfigHandler:
             "hotkey": "ctrl+alt+s",
             "selected_devices": [],
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "start_in_tray": False
         }
         return False
     
@@ -39,6 +40,10 @@ class ConfigHandler:
         else:
             if device_id in self.config['selected_devices']:
                 self.config['selected_devices'].remove(device_id)
+        self.write_config()
+
+    def toggle_start_behavior(self):
+        self.config['start_in_tray'] = not self.config.get('start_in_tray', False)
         self.write_config()
 
     def write_config(self):
