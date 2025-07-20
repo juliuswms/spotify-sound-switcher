@@ -53,7 +53,7 @@ class AppController:
             if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
                 self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
                 if not self.is_tray:
-                    threading.Thread(target=lambda: (threading.Event().wait(1), self.gui_populate_devices())).start() # TODO: Add check for tray
+                    self.gui_populate_devices(delay_refresh=True) # TODO: Add check for tray
 
     def device_is_available(self, device_id):
         return device_id in [device['id'] for device in self.spotify.get_available_devices()]
