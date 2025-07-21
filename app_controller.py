@@ -98,6 +98,17 @@ class AppController:
     def toggle_start_behavior(self):
         self.config_handler.toggle_start_behavior()
 
+    def open_autostart_folder(self):
+        if platform == "win32":
+            startup_folder  = os.path.join(os.getenv("APPDATA"),
+                        r"Microsoft\Windows\Start Menu\Programs\Startup")
+            Popen(f'explorer "{startup_folder}"')
+        else:
+            ErrorDialog("Autostart folder opening is not supported on this platform.")
+
+    def toggle_close_behavior(self):
+        self.config_handler.toggle_close_behavior()
+
     def destroy_app(self):
         self.is_tray = False
         if self.tray_icon:

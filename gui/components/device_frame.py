@@ -48,6 +48,7 @@ class DeviceFrame(ctk.CTkScrollableFrame):
                 device_label.configure(text_color="gray")
                 checkbox.configure(fg_color="gray")
     
+
     def toggle_device_selection(self, device_id):
         selected = self.device_vars[device_id].get()
         self.controller.config_handler.toggle_device(device_id, selected)

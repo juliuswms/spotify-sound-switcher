@@ -12,6 +12,7 @@ class MainWindow(ctk.CTk):
         self.resizable(False, False)
         self.tray_icon = None
         self.controller = controller
+        self.grid_columnconfigure((0, 1), weight=1)
 
         # Hotkey configuration
         ctk.CTkLabel(self, text="Hotkey:").pack(padx=5)
@@ -25,6 +26,8 @@ class MainWindow(ctk.CTk):
         self.device_frame.pack(pady=10, fill="both")
 
         ctk.CTkButton(self, text="Refresh Devices", command=self.device_frame.populate_devices).pack(pady=5, anchor="w")
+        open_autostart_folder_BTN = ctk.CTkButton(self, text="Open Autostart Folder", command=controller.open_autostart_folder)
+        open_autostart_folder_BTN.grid(row=3, column=1, padx=20, pady=(0, 20), sticky="w")
 
         start_in_tray = ctk.BooleanVar(value=self.controller.config_handler.config.get('start_in_tray', False))
         ctk.CTkCheckBox(self, text="Start in tray", variable=start_in_tray, command=controller.toggle_start_behavior).pack(pady=5, anchor="w")
