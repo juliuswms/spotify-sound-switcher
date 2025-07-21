@@ -1,16 +1,17 @@
 import os
 import json
-
-CONFIG_FILE = "config.json"
+from platformdirs import user_config_dir
 
 class ConfigHandler:
-    def __init__(self):
+    def __init__(self, version):
+        self.path = user_config_dir(appname="SpotifySoundSwitcher", version=version) # Why is app name doubled? (.../Local/SoundSwitcher/SpotifySoundSwitcher)
+        self.config_file = os.path.join(self.path, "config.json")
         self.load_config()
 
     def load_config(self):
-        if os.path.exists(CONFIG_FILE):
+        if os.path.exists(self.config_file):
             try:
-                with open(CONFIG_FILE, 'r') as f:
+                with open(self.config_file, 'r') as f:
                     self.config = json.load(f)
                     return True
             except (FileNotFoundError, json.JSONDecodeError) as e:
@@ -23,7 +24,7 @@ class ConfigHandler:
             "start_in_tray": False
         }
         return False
-    
+
     def save_credentials(self, client_id, client_secret):
         self.config['client_id'] = client_id
         self.config['client_secret'] = client_secret
@@ -47,5 +48,7 @@ class ConfigHandler:
         self.write_config()
 
     def write_config(self):
-        with open(CONFIG_FILE, 'w') as f:
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
+        with open(self.config_file, 'w') as f:
             json.dump(self.config, f)
