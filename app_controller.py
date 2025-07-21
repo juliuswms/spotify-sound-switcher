@@ -110,8 +110,7 @@ class AppController:
         self.config_handler.toggle_close_behavior()
 
     def destroy_app(self):
-        self.is_tray = False
-        if self.tray_icon:
+        if self.is_tray:
             self.tray_icon.stop()
 
         self.main_window.after(0, self.main_window.destroy)

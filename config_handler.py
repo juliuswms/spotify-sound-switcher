@@ -21,7 +21,8 @@ class ConfigHandler:
             "selected_devices": [],
             "client_id": "",
             "client_secret": "",
-            "start_in_tray": False
+            "start_in_tray": False,
+            "close_into_tray": False
         }
         return False
 
@@ -45,6 +46,10 @@ class ConfigHandler:
 
     def toggle_start_behavior(self):
         self.config['start_in_tray'] = not self.config.get('start_in_tray', False)
+        self.write_config()
+
+    def toggle_close_behavior(self):
+        self.config['close_into_tray'] = not self.config.get('close_into_tray', False)
         self.write_config()
 
     def write_config(self):

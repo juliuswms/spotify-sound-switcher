@@ -47,7 +47,6 @@ class DeviceFrame(ctk.CTkScrollableFrame):
                 checkbox.configure(state=ctk.DISABLED)
                 device_label.configure(text_color="gray")
                 checkbox.configure(fg_color="gray")
-    
 
     def toggle_device_selection(self, device_id):
         selected = self.device_vars[device_id].get()
