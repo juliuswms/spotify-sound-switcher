@@ -1,4 +1,4 @@
-# ![alt text](assets/icon/24x.png) Spotify Sound Switcher
+# ![alt text](assets/logo/24x.png) Spotify Sound Switcher
 
 **Spotify Sound Switcher** is a work-in-progress prototype app that lets you **instantly switch between Spotify devices using a hotkey**.
 
