@@ -42,7 +42,7 @@ class AppController:
 
     def initialize_spotify(self):
         try:
-            self.spotify = spotify_api.SpotifyApi(self.config_handler.config)
+            self.spotify = spotify_api.SpotifyApi(self.config_handler)
         except Exception as e:
             ErrorDialog(f"Error initializing Spotify API: {e}").wait_window()
 

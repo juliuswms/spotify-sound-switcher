@@ -1,15 +1,23 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.cache_handler import CacheFileHandler
+import os
 
 REDIRECT_URI = "http://localhost:8888/callback"
 SCOPE = "user-modify-playback-state user-read-playback-state"
 class SpotifyApi:
-    def __init__(self, config):
+    def __init__(self, config_handler):
+        config = config_handler.config
+        cache_path = config_handler.path
+        cache_path = os.path.join(cache_path, ".cache-spotify")
+        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+
         auth_manager = SpotifyOAuth(
             client_id=config['client_id'],
             client_secret=config['client_secret'],
             redirect_uri=REDIRECT_URI,
             scope=SCOPE,
+            cache_handler=CacheFileHandler(cache_path=cache_path),
         )
         self.client = spotipy.Spotify(auth_manager=auth_manager)
         self.get_available_devices()
