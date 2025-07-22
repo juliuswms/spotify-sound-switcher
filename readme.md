@@ -1,4 +1,4 @@
-# 🎧 Spotify Sound Switcher
+# ![alt text](assets/icon/24x.png) Spotify Sound Switcher
 
 **Spotify Sound Switcher** is a work-in-progress prototype app that lets you **instantly switch between Spotify devices using a hotkey**.
 
@@ -8,6 +8,8 @@
 - 🧠 Remembers your selected devices.
 - ⚙️ Runs in the background with system tray support (Windows only for now).
 - 🪄 Works via the official **Spotify Web API** — so you’ll need to set up credentials.
+
+![alt text](assets/screenshots/image.png)
 
 ---
 
