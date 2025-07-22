@@ -4,4 +4,4 @@ test.py
 /.vscode
 .cache
 *.pyc
-/build/main
+/build
