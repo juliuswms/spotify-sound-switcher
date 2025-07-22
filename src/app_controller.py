@@ -11,7 +11,7 @@ from gui import MainWindow, CredentialsDialog, ErrorDialog
 from PIL import Image
 from sys import platform
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 ICON_PATH = "assets/icon/favicon.ico"
 
 def resource_path(rel):

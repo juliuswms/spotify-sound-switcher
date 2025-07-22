@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['src\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('src/assets/icon/favicon.ico', 'assets/icon')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -29,10 +29,11 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['src\\assets\\icon\\favicon.ico'],
 )
