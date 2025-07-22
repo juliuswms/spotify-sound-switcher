@@ -11,6 +11,7 @@ from PIL import Image
 from sys import platform
 
 VERSION = "1.0.0"
+ICON_PATH = "assets/icon/favicon.ico"
 
 class AppController:
     def __init__(self):
@@ -25,6 +26,8 @@ class AppController:
 
         self.gui_populate_devices = None
         self.is_tray = False
+
+        self.icon = Image.open(ICON_PATH)
 
     def check_credentials(self, force=False):
         if not self.config_handler.load_config() or force:
@@ -81,12 +84,11 @@ class AppController:
     def minimize_to_tray(self, main_window):
         self.is_tray = True
         self.main_window = main_window
-        image = Image.new("RGB", (64, 64), "white") # PLACEHOLDER
         menu = pystray.Menu(
             pystray.MenuItem("Open", self.restore_from_tray, default=True),
             pystray.MenuItem("Exit", self.destroy_app)
         )
-        self.tray_icon = pystray.Icon("Spotify Device Switcher", image, menu=menu) # TODO: Add icon
+        self.tray_icon = pystray.Icon("Spotify Device Switcher", self.icon, menu=menu)
         threading.Thread(target=self.tray_icon.run, daemon=True).start()
 
     def restore_from_tray(self):
@@ -124,7 +126,7 @@ class AppController:
 
     def run(self):
         try:
-            main_window = MainWindow(self)
+            main_window = MainWindow(self, ICON_PATH)
             if self.config_handler.config.get('start_in_tray', False):
                 main_window.minimize_to_tray()
                 main_window.mainloop()

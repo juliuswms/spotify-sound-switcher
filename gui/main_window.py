@@ -2,15 +2,13 @@ import customtkinter as ctk
 from gui.components import HotkeyEntry, DeviceFrame
 
 class MainWindow(ctk.CTk):
-    def __init__(self, controller):
+    def __init__(self, controller, icon_path):
         super().__init__()
         self.title("Spotify Device Switcher")
         self.geometry("400x420")
-        # TODO: Add functionality to MACOS and Linux
-        #self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
         self.resizable(False, False)
-        self.tray_icon = None
         self.controller = controller
+        self.iconbitmap(icon_path)
         self.grid_columnconfigure((0, 1), weight=1)
 
         # Hotkey configuration
