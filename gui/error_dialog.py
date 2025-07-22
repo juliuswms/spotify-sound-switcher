@@ -5,7 +5,7 @@ class ErrorDialog(ctk.CTkToplevel):
         super().__init__()
         self.title("Error")
         self.geometry("300x100")
-        self.resizable(False, False)
+        self.resizable(True, True)
 
         ctk.CTkLabel(self, text=message).pack(pady=10)
         ctk.CTkButton(self, text="OK", command=self.destroy).pack(pady=10)

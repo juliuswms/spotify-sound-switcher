@@ -9,9 +9,10 @@ class SpotifyApi:
             client_id=config['client_id'],
             client_secret=config['client_secret'],
             redirect_uri=REDIRECT_URI,
-            scope=SCOPE, 
+            scope=SCOPE,
         )
         self.client = spotipy.Spotify(auth_manager=auth_manager)
+        self.get_available_devices()
 
     def get_available_devices(self):
         return self.client.devices().get('devices', [])

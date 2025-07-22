@@ -41,7 +41,7 @@ class AppController:
         try:
             self.spotify = spotify_api.SpotifyApi(self.config_handler.config)
         except Exception as e:
-            ErrorDialog(f"Error initializing Spotify API: {e}")
+            ErrorDialog(f"Error initializing Spotify API: {e}").wait_window()
 
     def set_device_switch_hotkey(self, initial=False):
         self.hotkey_handler.register_hotkey(self.switch_device, initial)
@@ -108,6 +108,13 @@ class AppController:
 
     def toggle_close_behavior(self):
         self.config_handler.toggle_close_behavior()
+        self.set_close_behavior()
+
+    def set_close_behavior(self):
+        if self.config_handler.config.get('close_into_tray', False):
+            self.main_window.set_protocol(self.main_window.minimize_to_tray)
+        else:
+            self.main_window.set_protocol(self.main_window.destroy)
 
     def destroy_app(self):
         if self.is_tray:
@@ -116,7 +123,11 @@ class AppController:
         self.main_window.after(0, self.main_window.destroy)
 
     def run(self):
-        main_window = MainWindow(self)
-        if self.config_handler.config.get('start_in_tray', False):
-            main_window.minimize_to_tray()
-        main_window.mainloop()
+        try:
+            main_window = MainWindow(self)
+            if self.config_handler.config.get('start_in_tray', False):
+                main_window.minimize_to_tray()
+                main_window.mainloop()
+        except Exception as e:
+            dialog = ErrorDialog(f"Error running Spotify Sound Switcher: {e}")
+            dialog.wait_window()

@@ -7,7 +7,7 @@ class MainWindow(ctk.CTk):
         self.title("Spotify Device Switcher")
         self.geometry("400x420")
         # TODO: Add functionality to MACOS and Linux
-        self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
+        #self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
         self.resizable(False, False)
         self.tray_icon = None
         self.controller = controller
@@ -36,8 +36,11 @@ class MainWindow(ctk.CTk):
         ctk.CTkCheckBox(self, text="Close into tray", variable=close_into_tray, command=controller.toggle_close_behavior).grid(row=4, column=1, padx=20, pady=(0, 20), sticky="w")
 
     def minimize_to_tray(self):
-        if self.controller.config_handler.config.get('close_into_tray', False):
-            self.withdraw()
-            self.controller.minimize_to_tray(self)
-        else:
-            self.destroy()
+        self.withdraw()
+        self.controller.minimize_to_tray(self)
+
+    def destroy(self):
+        return super().destroy()
+
+    def set_protocol(self, function):
+        self.protocol("WM_DELETE_WINDOW", function)
