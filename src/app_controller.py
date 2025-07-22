@@ -4,7 +4,8 @@ import hotkey_handler
 import pystray
 import threading
 import tkinter as tk
-import os
+import os, sys
+from pathlib import Path
 from subprocess import Popen
 from gui import MainWindow, CredentialsDialog, ErrorDialog
 from PIL import Image
@@ -12,6 +13,10 @@ from sys import platform
 
 VERSION = "1.0.0"
 ICON_PATH = "assets/icon/favicon.ico"
+
+def resource_path(rel):
+        base = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
+        return base / rel
 
 class AppController:
     def __init__(self):
@@ -27,7 +32,7 @@ class AppController:
         self.gui_populate_devices = None
         self.is_tray = False
 
-        self.icon = Image.open(ICON_PATH)
+        self.icon = Image.open(resource_path(ICON_PATH))
 
     def check_credentials(self, force=False):
         if not self.config_handler.load_config() or force:
@@ -110,13 +115,13 @@ class AppController:
 
     def toggle_close_behavior(self):
         self.config_handler.toggle_close_behavior()
-        self.set_close_behavior()
+        self.set_close_behavior(self.main_window)
 
-    def set_close_behavior(self):
+    def set_close_behavior(self, main_window):
         if self.config_handler.config.get('close_into_tray', False):
-            self.main_window.set_protocol(self.main_window.minimize_to_tray)
+            main_window.set_protocol(main_window.minimize_to_tray)
         else:
-            self.main_window.set_protocol(self.main_window.destroy)
+            main_window.set_protocol(main_window.destroy)
 
     def destroy_app(self):
         if self.is_tray:
@@ -126,10 +131,10 @@ class AppController:
 
     def run(self):
         try:
-            main_window = MainWindow(self, ICON_PATH)
+            self.main_window = MainWindow(self, resource_path(ICON_PATH))
             if self.config_handler.config.get('start_in_tray', False):
-                main_window.minimize_to_tray()
-                main_window.mainloop()
+                self.main_window.minimize_to_tray()
+            self.main_window.mainloop()
         except Exception as e:
             dialog = ErrorDialog(f"Error running Spotify Sound Switcher: {e}")
             dialog.wait_window()

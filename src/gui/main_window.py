@@ -8,6 +8,7 @@ class MainWindow(ctk.CTk):
         self.geometry("400x420")
         self.resizable(False, False)
         self.controller = controller
+        controller.set_close_behavior(self)
         self.iconbitmap(icon_path)
         self.grid_columnconfigure((0, 1), weight=1)
 
