@@ -7,7 +7,7 @@
 - 🔁 Switches active Spotify playback between devices (e.g. phone ↔ PC) with a single hotkey.
 - 🧠 Remembers your selected devices.
 - ⚙️ Runs in the background with system tray support (Windows only for now).
-- 🪄 Works via the official **Spotify Web API** — so you’ll need to set up credentials.
+- 🪄 Works via the official **Spotify Web API** — so you’ll need to [set up credentials](spotify-credentials-setup.md).
 
 ![alt text](assets/screenshots/image.png)
 
@@ -30,7 +30,7 @@
 
 1. **Create Spotify Developer Credentials**
    Head to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-   and create a new app to get a **Client ID** and **Client Secret**.
+   and [create a new app](spotify-credentials-setup.md) to get a **Client ID** and **Client Secret**.
 
 2. **Run the App**
    The first time you launch it, you’ll be prompted to enter your Spotify credentials.
