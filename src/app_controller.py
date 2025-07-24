@@ -79,18 +79,27 @@ class AppController:
         self.hotkey_handler.register_hotkey(self.switch_device, initial)
 
     def switch_device(self):
-        # TODO: Refactor needed
-        # If the current device is in the selected devices list, switch to the next device in the list
-        if self.is_current_device_available() and self.device_has_index(self.spotify.get_current_device()['id']):
-            # Get the index of the current device in the selected devices list
-            current_index = self.config_handler.config['selected_devices'].index(self.spotify.get_current_device()['id'])
-            # Get the next index in the list, looping back to the start if necessary
-            next_index = (current_index + 1) % len(self.config_handler.config['selected_devices'])
-            # Transfer playback to the next device if it is available
-            if self.device_is_available(self.config_handler.config['selected_devices'][next_index]):
-                self.spotify.transfer_playback(self.config_handler.config['selected_devices'][next_index])
-                if not self.is_tray:
-                    self.gui_populate_devices(delay_refresh=True)
+        """Switch to the next available output device in the selected devices list."""
+        if not self.is_current_device_available():
+            return
+
+        current_device = self.spotify.get_current_device()['id']
+
+        if not self.device_has_index(current_device):
+            return
+
+        device_ids = self.config_handler.config['selected_devices']
+        current_index = device_ids.index(current_device)
+        next_index = (current_index + 1) % len(device_ids)
+        next_device_id = device_ids[next_index]
+
+        if not self.device_is_available(next_device_id):
+            return
+
+        self.spotify.transfer_playback(next_device_id)
+        if not self.is_tray:
+            self.gui_populate_devices(delay_refresh=True)
+
 
     def is_current_device_available(self):
         """Check if the current output device is available."""
