@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 class ErrorDialog(ctk.CTkToplevel):
+    """A dialog window to display an error message."""
     def __init__(self, message):
         super().__init__()
         self.title("Error")

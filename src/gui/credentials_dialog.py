@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 class CredentialsDialog(ctk.CTkToplevel):
+    """A dialog window for entering Spotify API credentials."""
     def __init__(self, parent, callback):
         super().__init__(parent)
         self.title("Spotify API Credentials")
@@ -16,9 +17,10 @@ class CredentialsDialog(ctk.CTkToplevel):
         self.client_secret_entry = ctk.CTkEntry(self, show="*", width=300)
         self.client_secret_entry.pack(pady=5)
 
-        ctk.CTkButton(self, text="Save", command=self.check_credentials).pack(pady=10)
+        ctk.CTkButton(self, text="Save", command=self._check_credentials).pack(pady=10)
 
-    def check_credentials(self):
+    def _check_credentials(self):
+        """Passes the entered credentials to the callback function and closes the dialog."""
         client_id = self.client_id_entry.get().strip()
         client_secret = self.client_secret_entry.get().strip()
         if client_id and client_secret:
