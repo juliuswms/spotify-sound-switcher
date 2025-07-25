@@ -1,7 +1,9 @@
 import os
+import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import CacheFileHandler
+from gui import ErrorDialog
 
 REDIRECT_URI = "http://localhost:8888/callback"
 SCOPE = "user-modify-playback-state user-read-playback-state"
@@ -25,12 +27,26 @@ class SpotifyApi:
 
     def get_available_devices(self):
         """Get all available devices from the Spotify API."""
-        return self.client.devices().get('devices', [])
+        try:
+            return self.client.devices().get('devices', [])
+        except (requests.ConnectionError, requests.Timeout) as e:
+            error_dialog = ErrorDialog(f"Error getting available Devices {e}")
+            error_dialog.wait_window()
+            return []
 
     def transfer_playback(self, device_id):
         """Transfer playback to a specific device using the ID."""
-        self.client.transfer_playback(device_id, force_play=True)
+        try:
+            self.client.transfer_playback(device_id, force_play=True)
+        except (spotipy.SpotifyException) as e:
+            error_dialog = ErrorDialog(f"Error transferring playback: {e}")
+            error_dialog.wait_window()
 
     def get_current_device(self):
         """Get the current playback device."""
-        return self.client.current_playback().get('device')
+        try:
+            return self.client.current_playback().get('device', {})
+        except (requests.ConnectionError, requests.Timeout) as e:
+            error_dialog = ErrorDialog(f"Error getting current device: {e}")
+            error_dialog.wait_window()
+            return {}
