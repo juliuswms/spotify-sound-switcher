@@ -50,3 +50,7 @@ class SpotifyApi:
             error_dialog = ErrorDialog(f"Error getting current device: {e}")
             error_dialog.wait_window()
             return {}
+        except AttributeError as e:
+            error_dialog = ErrorDialog(f"Error getting current device: {e}")
+            error_dialog.wait_window()
+            return {}
