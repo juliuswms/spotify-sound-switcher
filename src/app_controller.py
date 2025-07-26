@@ -6,6 +6,7 @@ from pathlib import Path
 from subprocess import Popen
 from sys import platform
 
+from windows_toasts import Toast, ToastDisplayImage, ToastImage, WindowsToaster
 import pystray
 from PIL import Image
 import config_handler
@@ -45,6 +46,8 @@ class AppController:
 
         self.icon = Image.open(resource_path(ICON_PATH))
 
+        self.main_window: MainWindow
+
     def check_credentials(self, force=False):
         """
         Check if Spotify credentials are set, prompt for them if not.
@@ -81,11 +84,13 @@ class AppController:
     def switch_device(self):
         """Switch to the next available output device in the selected devices list."""
         if not self.is_current_device_available():
+            self.show_toast("Current device is not available. (Try playing something on Spotify)")
             return
 
         current_device = self.spotify.get_current_device()['id']
 
         if not self.device_has_index(current_device):
+            self.show_toast("Current device is not in the selected devices list.")
             return
 
         device_ids = self.config_handler.config['selected_devices']
@@ -94,6 +99,7 @@ class AppController:
         next_device_id = device_ids[next_index]
 
         if not self.device_is_available(next_device_id):
+            self.show_toast("Next device is not available.")
             return
 
         self.spotify.transfer_playback(next_device_id)
@@ -192,6 +198,16 @@ class AppController:
             main_window.set_protocol(main_window.minimize_to_tray)
         else:
             main_window.set_protocol(main_window.destroy)
+
+    def show_toast(self, message):
+        """Show a toast notification with the given message."""
+        if platform == "win32":
+            toaster = WindowsToaster("Spotify Device Switcher")
+            toast_image = ToastDisplayImage(ToastImage(resource_path(ICON_PATH)))
+            msg_toaster = Toast(text_fields=[message], images=[toast_image])
+            toaster.show_toast(msg_toaster)
+        else:
+            pass # TODO: Implement toast notifications for other platforms
 
     def destroy_app(self):
         """Destroy the application, stopping the tray icon if it exists and closing the main window."""
