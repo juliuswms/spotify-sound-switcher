@@ -227,3 +227,7 @@ class AppController:
         except Exception as e:
             dialog = ErrorDialog(f"Error running Spotify Sound Switcher: {e}")
             dialog.wait_window()
+
+if __name__ == "__main__":
+    app = AppController()
+    app.run()
