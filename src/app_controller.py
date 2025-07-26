@@ -205,6 +205,7 @@ class AppController:
             toaster = WindowsToaster("Spotify Device Switcher")
             toast_image = ToastDisplayImage(ToastImage(resource_path(ICON_PATH)))
             msg_toaster = Toast(text_fields=[message], images=[toast_image])
+            msg_toaster.on_activated = lambda _: self.restore_from_tray()
             toaster.show_toast(msg_toaster)
         else:
             pass # TODO: Implement toast notifications for other platforms
